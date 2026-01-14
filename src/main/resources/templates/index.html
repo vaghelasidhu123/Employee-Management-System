@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Employee Directory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
+            min-height: 100vh;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            margin: 0.2rem 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #fff;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.25rem;
+        }
+
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2e59d9;
+        }
+
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #5a5c69;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .status-active {
+            color: #1cc88a;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #e74a3b;
+            font-weight: 600;
+        }
+
+        .search-box {
+            max-width: 300px;
+        }
+
+        .pagination .page-link {
+            color: #4e73df;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+
+        .action-buttons .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .search-box {
+                max-width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <div class="sidebar-header px-3 py-4">
+                    <h2 class="text-white">
+                        <i class="fas fa-users"></i> EMS
+                    </h2>
+                    <p class="text-white-50 mb-0">Employee Management System</p>
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/dashboard}">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/employees}">
+                            <i class="fas fa-users"></i>
+                            Employees
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/showNewEmployeeForm}">
+                            <i class="fas fa-user-plus"></i>
+                            Add Employee
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-bar"></i>
+                            Reports
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <!-- Top Navigation -->
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2" th:text="${pageTitle}">Employee Directory</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a th:href="@{/showNewEmployeeForm}" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-1"></i> Add New Employee
+                    </a>
+                </div>
+            </div>
+
+            <!-- Flash Messages -->
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${param.error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${param.success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${param.success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="input-group search-box">
+                                <input type="text" class="form-control" placeholder="Search employees..." id="searchInput">
+                                <button class="btn btn-outline-primary" type="button" id="searchButton">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <select class="form-select" id="departmentFilter">
+                                <option value="">All Departments</option>
+                                <option value="IT">IT</option>
+                                <option value="HR">HR</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Table -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-table me-2"></i>Employee List
+                    </h6>
+                    <div class="text-muted small">
+                        Showing <span th:text="${listEmployees.size()}">0</span> employees
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="employeeTable">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <a th:href="@{/page/1(sortField='firstName', sortDir=${reverseSortDir})}">
+                                        Name
+                                        <span th:if="${sortField == 'firstName'}">
+                                                    <i th:class="${sortDir == 'asc'} ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+                                                </span>
+                                    </a>
+                                </th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Department</th>
+                                <th>Position</th>
+                                <th>
+                                    <a th:href="@{/page/1(sortField='salary', sortDir=${reverseSortDir})}">
+                                        Salary
+                                        <span th:if="${sortField == 'salary'}">
+                                                    <i th:class="${sortDir == 'asc'} ? 'fas fa-sort-up' : 'fas fa-sort-down'"></i>
+                                                </span>
+                                    </a>
+                                </th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="employee : ${listEmployees}">
+                                <td>
+                                    <div class="fw-bold" th:text="${employee.firstName + ' ' + employee.lastName}"></div>
+                                    <small class="text-muted" th:text="'ID: ' + ${employee.id}"></small>
+                                </td>
+                                <td th:text="${employee.email}"></td>
+                                <td th:text="${employee.phoneNumber} ?: 'N/A'"></td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${employee.department} ?: 'N/A'"></span>
+                                </td>
+                                <td th:text="${employee.position} ?: 'N/A'"></td>
+                                <td>
+                                    <span class="fw-bold" th:text="${employee.salary} ? '₹' + ${#numbers.formatDecimal(employee.salary, 1, 2, 'COMMA')} : 'N/A'"></span>
+                                </td>
+                                <td>
+                                            <span th:class="${employee.isActive} ? 'status-active' : 'status-inactive'">
+                                                <i th:class="${employee.isActive} ? 'fas fa-circle' : 'fas fa-circle'"></i>
+                                                <span th:text="${employee.isActive} ? ' Active' : ' Inactive'"></span>
+                                            </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a th:href="@{/showFormForUpdate/{id}(id=${employee.id})}"
+                                           class="btn btn-sm btn-outline-primary me-1"
+                                           title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a th:href="@{/deleteEmployee/{id}(id=${employee.id})}"
+                                           class="btn btn-sm btn-outline-danger"
+                                           title="Delete"
+                                           onclick="return confirm('Are you sure you want to delete this employee?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-info ms-1"
+                                                title="View Details"
+                                                onclick="viewEmployeeDetails([[${employee.id}]])">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${listEmployees.empty}">
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-users fa-2x mb-3 d-block"></i>
+                                    No employees found.
+                                    <a th:href="@{/showNewEmployeeForm}" class="text-primary">Add your first employee</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div th:if="${totalPages > 0}" class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted small">
+                            Showing page <span th:text="${currentPage}">1</span> of
+                            <span th:text="${totalPages}">1</span>
+                            (Total: <span th:text="${totalItems}">0</span> employees)
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-end mb-0">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/page/{pageNo}(pageNo=${currentPage - 1}, sortField=${sortField}, sortDir=${sortDir})}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <li th:each="i : ${#numbers.sequence(1, totalPages)}"
+                                    class="page-item"
+                                    th:classappend="${i == currentPage} ? 'active'">
+                                    <a class="page-link"
+                                       th:href="@{/page/{pageNo}(pageNo=${i}, sortField=${sortField}, sortDir=${sortDir})}"
+                                       th:text="${i}"></a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a class="page-link"
+                                       th:href="@{/page/{pageNo}(pageNo=${currentPage + 1}, sortField=${sortField}, sortDir=${sortDir})}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Employee Details Modal -->
+<div class="modal fade" id="employeeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Employee Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="employeeDetails">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        $('#employeeTable').DataTable({
+            "paging": false,
+            "searching": false,
+            "info": false,
+            "ordering": false
+        });
+
+        // Search functionality
+        $('#searchButton').click(function() {
+            var searchText = $('#searchInput').val().toLowerCase();
+            $('#employeeTable tbody tr').each(function() {
+                var rowText = $(this).text().toLowerCase();
+                $(this).toggle(rowText.indexOf(searchText) > -1);
+            });
+        });
+
+        $('#searchInput').on('keyup', function() {
+            $('#searchButton').click();
+        });
+
+        // Filter by department
+        $('#departmentFilter').change(function() {
+            var department = $(this).val();
+            $('#employeeTable tbody tr').each(function() {
+                var rowDepartment = $(this).find('td:eq(3)').text().trim();
+                $(this).toggle(!department || rowDepartment === department);
+            });
+        });
+
+        // Filter by status
+        $('#statusFilter').change(function() {
+            var status = $(this).val();
+            $('#employeeTable tbody tr').each(function() {
+                var rowStatus = $(this).find('td:eq(6)').text().trim().toLowerCase();
+                $(this).toggle(!status || rowStatus.indexOf(status) > -1);
+            });
+        });
+    });
+
+    function viewEmployeeDetails(employeeId) {
+        $.ajax({
+            url: '/api/employees/' + employeeId,
+            method: 'GET',
+            success: function(data) {
+                var detailsHtml = `
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <div class="mb-3">
+                                    <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center"
+                                         style="width: 100px; height: 100px;">
+                                        <span class="text-white h4">
+                                            ${data.firstName ? data.firstName.charAt(0) : ''}${data.lastName ? data.lastName.charAt(0) : ''}
+                                        </span>
+                                    </div>
+                                </div>
+                                <h5>${data.firstName} ${data.lastName}</h5>
+                                <p class="text-muted">${data.position || 'N/A'}</p>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <small class="text-muted">Email</small>
+                                        <div class="fw-bold">${data.email || 'N/A'}</div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <small class="text-muted">Phone</small>
+                                        <div class="fw-bold">${data.phoneNumber || 'N/A'}</div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <small class="text-muted">Department</small>
+                                        <div><span class="badge bg-info">${data.department || 'N/A'}</span></div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <small class="text-muted">Salary</small>
+                                        <div class="fw-bold">${data.salary ? '₹' + data.salary.toLocaleString() : 'N/A'}</div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <small class="text-muted">Hire Date</small>
+                                        <div>${data.hireDate || 'N/A'}</div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <small class="text-muted">Status</small>
+                                        <div>
+                                            <span class="${data.isActive ? 'status-active' : 'status-inactive'}">
+                                                <i class="fas fa-circle"></i>
+                                                ${data.isActive ? ' Active' : ' Inactive'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <small class="text-muted">Employee ID</small>
+                                        <div class="fw-bold">${data.id}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                $('#employeeDetails').html(detailsHtml);
+                $('#employeeModal').modal('show');
+            },
+            error: function() {
+                alert('Error loading employee details');
+            }
+        });
+    }
+</script>
+</body>
+</html>
