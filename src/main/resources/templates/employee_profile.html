@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Employee Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Same CSS as your index.html */
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
+            min-height: 100vh;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            margin: 0.2rem 0;
+            transition: all 0.3s;
+        }
+
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #fff;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.35rem 0.35rem 0 0;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #4e73df;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .info-label {
+            color: #858796;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #5a5c69;
+            font-size: 1.1rem;
+        }
+
+        .status-active {
+            color: #1cc88a;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #e74a3b;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+            <div class="position-sticky pt-3">
+                <div class="sidebar-header px-3 py-4">
+                    <h2 class="text-white">
+                        <i class="fas fa-users"></i> EMS
+                    </h2>
+                    <p class="text-white-50 mb-0">Employee Management System</p>
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/dashboard}">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/employees}">
+                            <i class="fas fa-users"></i>
+                            Employees
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/showNewEmployeeForm}">
+                            <i class="fas fa-user-plus"></i>
+                            Add Employee
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-user-circle"></i>
+                            Profile
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+            <!-- Back Button -->
+            <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <a th:href="@{/employees}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Employees
+                </a>
+
+                <div>
+                    <a th:href="@{/showFormForUpdate/{id}(id=${employee.id})}"
+                       class="btn btn-primary me-2">
+                        <i class="fas fa-edit me-1"></i> Edit
+                    </a>
+                    <a th:href="@{/deleteEmployee/{id}(id=${employee.id})}"
+                       class="btn btn-danger"
+                       onclick="return confirm('Are you sure you want to delete this employee?')">
+                        <i class="fas fa-trash me-1"></i> Delete
+                    </a>
+                </div>
+            </div>
+
+            <!-- Employee Profile -->
+            <div class="card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <span th:text="${employee.firstName?.charAt(0)} + ${employee.lastName?.charAt(0)}">JD</span>
+                    </div>
+                    <div class="text-center">
+                        <h2 th:text="${employee.firstName} + ' ' + ${employee.lastName}"></h2>
+                        <p class="mb-0" th:text="${employee.position} ?: 'Position not specified'"></p>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Personal Info -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="mb-3 text-primary">
+                                <i class="fas fa-id-card me-2"></i>Personal Information
+                            </h5>
+                            <div class="mb-3">
+                                <div class="info-label">Employee ID</div>
+                                <div class="info-value" th:text="${employee.id}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Full Name</div>
+                                <div class="info-value" th:text="${employee.firstName} + ' ' + ${employee.lastName}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Email</div>
+                                <div class="info-value">
+                                    <a th:href="'mailto:' + ${employee.email}" th:text="${employee.email}"></a>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Phone</div>
+                                <div class="info-value" th:text="${employee.phoneNumber} ?: 'Not provided'"></div>
+                            </div>
+                        </div>
+
+                        <!-- Employment Info -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="mb-3 text-primary">
+                                <i class="fas fa-briefcase me-2"></i>Employment Details
+                            </h5>
+                            <div class="mb-3">
+                                <div class="info-label">Department</div>
+                                <div class="info-value">
+                                        <span th:if="${employee.department}"
+                                              class="badge bg-info"
+                                              th:text="${employee.department}"></span>
+                                    <span th:unless="${employee.department}">Not assigned</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Position</div>
+                                <div class="info-value" th:text="${employee.position} ?: 'Not specified'"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Salary</div>
+                                <div class="info-value"
+                                     th:text="${employee.salary} ? ('₹' + ${#numbers.formatDecimal(employee.salary, 1, 2, 'COMMA')}) : 'Not specified'"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Hire Date</div>
+                                <div class="info-value" th:text="${employee.hireDate} ?: 'Not specified'"></div>
+                            </div>
+                        </div>
+
+                        <!-- Status Info -->
+                        <div class="col-12">
+                            <h5 class="mb-3 text-primary">
+                                <i class="fas fa-info-circle me-2"></i>Status Information
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-label">Employee Status</div>
+                                    <div class="info-value">
+                                            <span th:class="${employee.isActive} ? 'status-active' : 'status-inactive'"
+                                                  th:text="${employee.isActive} ? 'Active' : 'Inactive'">
+                                            </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-label">Created On</div>
+                                    <div class="info-value" th:text="${employee.createdAt} ?: 'Not available'"></div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="info-label">Last Updated</div>
+                                    <div class="info-value" th:text="${employee.updatedAt} ?: 'Not available'"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

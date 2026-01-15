@@ -66,6 +66,15 @@ public class EmployeeController {
         return "redirect:/employees";
     }
 
+    // Add this new method
+    @GetMapping("/viewEmployee/{id}")
+    public String viewEmployeeProfile(@PathVariable(value = "id") long id, Model model) {
+        Employee employee = employeeService.getEmployeeById(id);
+        model.addAttribute("employee", employee);
+        model.addAttribute("pageTitle", employee.getFirstName() + " " + employee.getLastName() + " - Profile");
+        return "employee_profile";
+    }
+
     @GetMapping("/page/{pageNo}")
     public String findPaginated(@PathVariable(value = "pageNo") int pageNo,
                                 @RequestParam("sortField") String sortField,
