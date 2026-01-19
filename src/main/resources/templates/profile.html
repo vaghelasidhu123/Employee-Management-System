@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${pageTitle}">Employee Profile</title>
+    <title th:text="${pageTitle}">My Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Same CSS as your index.html */
         body {
             background-color: #f8f9fc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -85,14 +84,25 @@
             font-size: 1.1rem;
         }
 
-        .status-active {
-            color: #1cc88a;
+        .role-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
             font-weight: 600;
         }
 
-        .status-inactive {
-            color: #e74a3b;
-            font-weight: 600;
+        .role-admin {
+            background-color: #e74a3b;
+            color: white;
+        }
+
+        .role-manager {
+            background-color: #f6c23e;
+            color: white;
+        }
+
+        .role-user {
+            background-color: #1cc88a;
+            color: white;
         }
     </style>
 </head>
@@ -148,126 +158,138 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
             <!-- Back Button -->
             <div class="d-flex justify-content-between align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <a th:href="@{/employees}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> Back to Employees
+                <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                 </a>
-
-                <div>
-                    <a th:href="@{/showFormForUpdate/{id}(id=${employee.id})}"
-                       class="btn btn-primary me-2">
-                        <i class="fas fa-edit me-1"></i> Edit
-                    </a>
-                    <a th:href="@{/deleteEmployee/{id}(id=${employee.id})}"
-                       class="btn btn-danger"
-                       onclick="return confirm('Are you sure you want to delete this employee?')">
-                        <i class="fas fa-trash me-1"></i> Delete
-                    </a>
-                </div>
             </div>
 
-            <!-- Employee Profile -->
+            <!-- User Profile -->
             <div class="card">
                 <div class="profile-header">
                     <div class="text-center">
-                        <div th:if="${employee.profileImage != null}">
-                            <img th:src="@{'/uploads/profile-images/' + ${employee.profileImage}}"
-                                 alt="Profile Picture"
-                                 class="img-thumbnail rounded-circle"
-                                 style="width: 200px; height: 200px; object-fit: cover;">
+                        <div class="profile-avatar">
+                            <span th:text="${user.fullName?.charAt(0)} ?: ${user.username?.charAt(0)}"></span>
                         </div>
-                        <div th:unless="${employee.profileImage != null}">
-                            <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center"
-                                 style="width: 200px; height: 200px;">
-                    <span class="text-white display-4">
-                        <span th:text="${employee.firstName?.charAt(0)}"></span>
-                        <span th:text="${employee.lastName?.charAt(0)}"></span>
-                    </span>
-                            </div>
+                        <h2 th:text="${user.fullName} ?: ${user.username}"></h2>
+                        <div th:class="'role-badge role-' + ${user.role?.name()?.toLowerCase()}">
+                            <span th:text="${user.role}"></span>
                         </div>
-                    </div>
-                    <div class="text-center">
-                        <h2 th:text="${employee.firstName} + ' ' + ${employee.lastName}"></h2>
-                        <p class="mb-0" th:text="${employee.position} ?: 'Position not specified'"></p>
                     </div>
                 </div>
 
                 <div class="card-body">
                     <div class="row">
-                        <!-- Personal Info -->
+                        <!-- Account Information -->
                         <div class="col-md-6 mb-4">
                             <h5 class="mb-3 text-primary">
-                                <i class="fas fa-id-card me-2"></i>Personal Information
+                                <i class="fas fa-user-circle me-2"></i>Account Information
                             </h5>
                             <div class="mb-3">
-                                <div class="info-label">Employee ID</div>
-                                <div class="info-value" th:text="${employee.id}"></div>
+                                <div class="info-label">Username</div>
+                                <div class="info-value" th:text="${user.username}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Email Address</div>
+                                <div class="info-value">
+                                    <a th:href="'mailto:' + ${user.email}" th:text="${user.email}"></a>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <div class="info-label">Full Name</div>
-                                <div class="info-value" th:text="${employee.firstName} + ' ' + ${employee.lastName}"></div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="info-label">Email</div>
-                                <div class="info-value">
-                                    <a th:href="'mailto:' + ${employee.email}" th:text="${employee.email}"></a>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="info-label">Phone</div>
-                                <div class="info-value" th:text="${employee.phoneNumber} ?: 'Not provided'"></div>
+                                <div class="info-value" th:text="${user.fullName} ?: 'Not provided'"></div>
                             </div>
                         </div>
 
-                        <!-- Employment Info -->
+                        <!-- Account Details -->
                         <div class="col-md-6 mb-4">
                             <h5 class="mb-3 text-primary">
-                                <i class="fas fa-briefcase me-2"></i>Employment Details
+                                <i class="fas fa-info-circle me-2"></i>Account Details
                             </h5>
                             <div class="mb-3">
-                                <div class="info-label">Department</div>
+                                <div class="info-label">User ID</div>
+                                <div class="info-value" th:text="${user.id}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Account Created</div>
+                                <div class="info-value" th:text="${user.createdAt} ?: 'Not available'"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Last Updated</div>
+                                <div class="info-value" th:text="${user.updatedAt} ?: 'Not available'"></div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="info-label">Account Status</div>
                                 <div class="info-value">
-                                        <span th:if="${employee.department}"
-                                              class="badge bg-info"
-                                              th:text="${employee.department}"></span>
-                                    <span th:unless="${employee.department}">Not assigned</span>
+                                    <span th:class="${user.isEnabled} ? 'text-success' : 'text-danger'">
+                                        <i th:class="${user.isEnabled} ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                                        <span th:text="${user.isEnabled} ? ' Active' : ' Inactive'"></span>
+                                    </span>
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="info-label">Position</div>
-                                <div class="info-value" th:text="${employee.position} ?: 'Not specified'"></div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="info-label">Salary</div>
-                                <div class="info-value"
-                                     th:text="${employee.salary} ? ('₹' + ${#numbers.formatDecimal(employee.salary, 1, 2, 'COMMA')}) : 'Not specified'"></div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="info-label">Hire Date</div>
-                                <div class="info-value" th:text="${employee.hireDate} ?: 'Not specified'"></div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Status Info -->
+                    <!-- Actions -->
+                    <div class="row mt-4 pt-3 border-top">
                         <div class="col-12">
                             <h5 class="mb-3 text-primary">
-                                <i class="fas fa-info-circle me-2"></i>Status Information
+                                <i class="fas fa-cog me-2"></i>Actions
                             </h5>
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <div class="info-label">Employee Status</div>
-                                    <div class="info-value">
-                                            <span th:class="${employee.isActive} ? 'status-active' : 'status-inactive'"
-                                                  th:text="${employee.isActive} ? 'Active' : 'Inactive'">
-                                            </span>
-                                    </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary">
+                                    <i class="fas fa-edit me-1"></i> Edit Profile
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fas fa-key me-1"></i> Change Password
+                                </button>
+                                <button class="btn btn-outline-warning">
+                                    <i class="fas fa-bell me-1"></i> Notification Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Information -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-shield-alt me-2"></i>Security Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-check-circle text-success fa-2x"></i>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="info-label">Created On</div>
-                                    <div class="info-value" th:text="${employee.createdAt} ?: 'Not available'"></div>
+                                <div>
+                                    <div class="fw-bold">Password Strength</div>
+                                    <div class="text-muted">Strong</div>
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="info-label">Last Updated</div>
-                                    <div class="info-value" th:text="${employee.updatedAt} ?: 'Not available'"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-clock text-info fa-2x"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Last Login</div>
+                                    <div class="text-muted" th:text="${#dates.format(#dates.createNow(), 'dd-MMM-yyyy HH:mm')}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="fas fa-history text-warning fa-2x"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">Activity Log</div>
+                                    <div class="text-muted">View login history</div>
                                 </div>
                             </div>
                         </div>

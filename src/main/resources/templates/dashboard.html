@@ -200,10 +200,25 @@
                             Reports
                         </a>
                     </li>
+                    <!-- Current last nav items: -->
                     <li class="nav-item">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cog"></i>
                             Settings
+                        </a>
+                    </li>
+
+                    <!-- Iske baad ADD these 2 items: -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/profile}">
+                            <i class="fas fa-user-circle"></i>
+                            My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
                         </a>
                     </li>
                 </ul>
@@ -223,14 +238,30 @@
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2" th:text="${pageTitle}">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span th:text="${username} ?: 'Guest'"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/profile}">
+                                <i class="fas fa-user me-2"></i>My Profile
+                            </a></li>
+                            <li><a class="dropdown-item" href="#">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a></li>
+                        </ul>
+                    </div>
                     <div class="btn-group me-2">
                         <button type="button" class="btn btn-sm btn-outline-secondary">
                             <i class="fas fa-download"></i> Export
                         </button>
                     </div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                        <i class="fas fa-user-circle"></i> Admin
-                    </button>
                 </div>
             </div>
 

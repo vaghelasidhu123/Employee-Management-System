@@ -181,10 +181,17 @@
                             Reports
                         </a>
                     </li>
+
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-cog"></i>
-                            Settings
+                        <a class="nav-link" th:href="@{/profile}">
+                            <i class="fas fa-user-circle"></i>
+                            My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
                         </a>
                     </li>
                 </ul>
@@ -255,6 +262,7 @@
                                     <input type="tel" class="form-control" id="phoneNumber"
                                            th:field="*{phoneNumber}">
                                 </div>
+
                             </div>
                         </div>
 

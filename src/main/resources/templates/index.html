@@ -162,10 +162,25 @@
                             Reports
                         </a>
                     </li>
+                    <!-- Current: -->
                     <li class="nav-item">
                         <a class="nav-link" href="#">
                             <i class="fas fa-cog"></i>
                             Settings
+                        </a>
+                    </li>
+
+                    <!-- Replace with: -->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/profile}">
+                            <i class="fas fa-user-circle"></i>
+                            My Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
                         </a>
                     </li>
                 </ul>
@@ -273,8 +288,10 @@
                                     <div class="fw-bold" th:text="${employee.firstName + ' ' + employee.lastName}"></div>
                                     <small class="text-muted" th:text="'ID: ' + ${employee.id}"></small>
                                 </td>
+
                                 <td th:text="${employee.email}"></td>
                                 <td th:text="${employee.phoneNumber} ?: 'N/A'"></td>
+
                                 <td>
                                     <span class="badge bg-info" th:text="${employee.department} ?: 'N/A'"></span>
                                 </td>

@@ -11,14 +11,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+    
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -29,10 +26,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void saveEmployee(Employee employee) {
-        if (employee.getIsActive() == null) {
-            employee.setIsActive(true);
-        }
-        this.employeeRepository.save(employee);
+         if(employee.getIsActive() == null)
+         {
+             employee.setIsActive(true);
+         }
+         this.employeeRepository.save(employee);
     }
 
     @Override
