@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
+import jakarta.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -25,24 +24,22 @@ public class EmployeeController {
     @Autowired
     private UserService userService;
 
-    // Home page redirect to dashboard
     @GetMapping("/")
     public String homeRedirect() {
         return "redirect:/dashboard";
     }
 
-    // Dashboard home page
     @GetMapping("/dashboard")
     public String showDashboard(Model model, Principal principal) {
-        // Get statistics for dashboard
         long totalEmployees = employeeService.getAllEmployees().size();
         long totalUsers = userService.getTotalUsers();
+        long activeEmployees = employeeService.getActiveEmployeesCount();
 
         model.addAttribute("totalEmployees", totalEmployees);
         model.addAttribute("totalUsers", totalUsers);
+        model.addAttribute("activeEmployees", activeEmployees);
         model.addAttribute("pageTitle", "Dashboard");
 
-        // Add username if logged in
         if (principal != null) {
             model.addAttribute("username", principal.getName());
         }
@@ -50,7 +47,6 @@ public class EmployeeController {
         return "dashboard";
     }
 
-    // Employee list page
     @GetMapping("/employees")
     public String viewEmployeeList(Model model) {
         return findPaginated(1, "firstName", "asc", model);
@@ -65,8 +61,15 @@ public class EmployeeController {
     }
 
     @PostMapping("/saveEmployee")
-    public String saveEmployee(@ModelAttribute("employee") Employee employee)
-    {
+    public String saveEmployee(@Valid @ModelAttribute("employee") Employee employee,
+                               BindingResult result,
+                               Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("pageTitle",
+                    employee.getId() != null ? "Update Employee" : "Add New Employee");
+            return employee.getId() != null ? "update_employee" : "new_employee";
+        }
+
         employeeService.saveEmployee(employee);
         return "redirect:/employees";
     }
@@ -80,12 +83,17 @@ public class EmployeeController {
     }
 
     @GetMapping("/deleteEmployee/{id}")
-    public String deleteEmployee(@PathVariable(value = "id") long id) {
-        this.employeeService.deleteEmployeeById(id);
+    public String deleteEmployee(@PathVariable(value = "id") long id,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            this.employeeService.deleteEmployeeById(id);
+            redirectAttributes.addFlashAttribute("success", "Employee deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting employee: " + e.getMessage());
+        }
         return "redirect:/employees";
     }
 
-    // Add this new method
     @GetMapping("/viewEmployee/{id}")
     public String viewEmployeeProfile(@PathVariable(value = "id") long id, Model model) {
         Employee employee = employeeService.getEmployeeById(id);

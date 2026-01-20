@@ -1,46 +1,24 @@
 package com.employeemanagementsystem.service;
 
-import com.employeemanagementsystem.model.Role;
 import com.employeemanagementsystem.model.User;
-import com.employeemanagementsystem.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-public class UserService {
+public interface UserService {
+    User registerUser(User user);
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
+    long getTotalUsers();
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    User updateUser(User user);
+    void deleteUser(Long id);
 
-    @Autowired
-    private UserRepository userRepository;
+    boolean verifyUserCredentials(String username, String email);
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    void updatePassword(String username, String newPassword);
 
-    public User registerUser(User user) {
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username already exists");
-        }
+    void changePassword(String username, String currentPassword, String newPassword);
 
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already registered");
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        if (user.getRole() == null) {
-            user.setRole(Role.USER);
-        }
-
-        return userRepository.save(user);
-    }
-
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public long getTotalUsers() {
-        return userRepository.count();
-    }
+    void updateProfile(String username, User updatedUser);
 }
