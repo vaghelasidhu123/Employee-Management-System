@@ -17,15 +17,15 @@ User registration form with role selection, password strength validation, and te
 Main dashboard showing real-time statistics, quick actions, recent activities, and system information.
 
 ### 4. User Profile
-![Profile](Screenshot%20(414).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ad533f0e-91a0-4b63-91fe-5b8b8620e3c8" />
 Complete user profile displaying account information, security details, and account status.
 
 ### 5. Change Password
-![Change Password](Screenshot%20(415).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/e4387d7b-ae48-45fd-b1d1-1c09d46f2bf6" />
 Password change interface with current password verification and new password confirmation.
 
 ### 6. Edit Profile
-![Edit Profile](Screenshot%20(416).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4c122b00-577c-410d-9c6a-c7369c1bcbe1" />
 Profile editing form with validation and real-time updates.
 
 ### 7. Employee Directory
@@ -37,7 +37,7 @@ Employee listing with search, filter, pagination, and action buttons for each em
 Employee information editing form with active/inactive status toggle.
 
 ### 9. Employee Details
-![Employee Details](Screenshot%20(419).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7aec5feb-1d66-48c6-bdac-4f89035bf6c8" />
 Detailed employee profile view showing personal, employment, and status information.
 
 ## 🚀 Quick Setup
