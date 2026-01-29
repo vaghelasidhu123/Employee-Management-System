@@ -13,7 +13,7 @@ Secure login interface with username/password authentication and links for regis
 User registration form with role selection, password strength validation, and terms agreement.
 
 ### 3. Dashboard
-![Dashboard](Screenshot%20(413).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9e3cbb2a-69ac-4db3-9474-377e1a3f3338" />
 Main dashboard showing real-time statistics, quick actions, recent activities, and system information.
 
 ### 4. User Profile
@@ -29,11 +29,11 @@ Password change interface with current password verification and new password co
 Profile editing form with validation and real-time updates.
 
 ### 7. Employee Directory
-![Employee Directory](Screenshot%20(417).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ac46bb0b-42c3-4f61-b3c5-b15279d35646" />
 Employee listing with search, filter, pagination, and action buttons for each employee.
 
 ### 8. Update Employee
-![Update Employee](Screenshot%20(418).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3c00e538-6af5-4f42-bcc7-94c365b55531" />
 Employee information editing form with active/inactive status toggle.
 
 ### 9. Employee Details
