@@ -5,11 +5,11 @@ A complete Employee Management System built with **Spring Boot** and **MySQL** t
 ## 📸 Application Screenshots
 
 ### 1. Login Page
-![Login](Screenshot%20(411).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/92a5a400-fca3-426a-a53b-8bc42bb4870e" />
 Secure login interface with username/password authentication and links for registration and password recovery.
 
 ### 2. Registration Page
-![Registration](Screenshot%20(412).png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d88029cd-ec54-43f5-888a-b2da52f14ad9" />
 User registration form with role selection, password strength validation, and terms agreement.
 
 ### 3. Dashboard
