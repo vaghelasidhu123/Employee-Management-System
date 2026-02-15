@@ -1,4 +1,4 @@
-package com.employeemanagementsystem.service.impl;
+package com.employeemanagementsystem.service.Impl;
 
 import java.time.LocalDate;
 import java.util.HashMap;
