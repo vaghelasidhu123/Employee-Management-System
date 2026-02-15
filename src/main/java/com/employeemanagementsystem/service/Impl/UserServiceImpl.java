@@ -1,4 +1,4 @@
-package com.employeemanagementsystem.service.Impl;
+package com.employeemanagementsystem.service.impl;
 
 import com.employeemanagementsystem.model.Role;
 import com.employeemanagementsystem.model.User;
@@ -22,25 +22,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(User user) {
-
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
-
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already registered");
         }
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
-
         user.setIsEnabled(true);
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
-
         return userRepository.save(user);
     }
 
@@ -78,25 +72,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public boolean verifyUserCredentials(String username, String email) {
-        return false;
-    }
-
-    @Override
-    public void updatePassword(String username, String newPassword) {
-
-    }
-
-    @Override
-    public void changePassword(String username, String currentPassword, String newPassword) {
-
-    }
-
-    @Override
-    public void updateProfile(String username, User updatedUser) {
-
     }
 }

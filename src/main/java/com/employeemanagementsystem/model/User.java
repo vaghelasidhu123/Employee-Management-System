@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -52,6 +53,10 @@ public class User implements UserDetails {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @PreUpdate
     protected void onUpdate() {

@@ -157,12 +157,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-chart-bar"></i>
-                            Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" th:href="@{/profile}">
                             <i class="fas fa-user-circle"></i>
                             My Profile
@@ -389,7 +383,7 @@
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
 <script>
-    $(document).ready(function() {
+  $(document).ready(function() {
         // Initialize DataTable
         $('#employeeTable').DataTable({
             "paging": false,

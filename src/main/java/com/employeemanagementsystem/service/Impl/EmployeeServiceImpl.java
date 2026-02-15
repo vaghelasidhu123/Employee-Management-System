@@ -1,6 +1,7 @@
-package com.employeemanagementsystem.service.Impl;
+package com.employeemanagementsystem.service.impl;
 
 import com.employeemanagementsystem.model.Employee;
+import com.employeemanagementsystem.model.User;
 import com.employeemanagementsystem.repository.EmployeeRepository;
 import com.employeemanagementsystem.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,84 +12,84 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    
+
     @Autowired
     private EmployeeRepository employeeRepository;
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<Employee> getEmployeesByUser(User user) {
+        return employeeRepository.findByUser(user);
     }
 
     @Override
-    public void saveEmployee(Employee employee) {
-         if(employee.getIsActive() == null)
-         {
-             employee.setIsActive(true);
-         }
-         this.employeeRepository.save(employee);
+    public void saveEmployee(Employee employee, User user) {
+        if (employee.getIsActive() == null) {
+            employee.setIsActive(true);
+        }
+        employee.setUser(user);
+        employeeRepository.save(employee);
     }
 
     @Override
-    public Employee getEmployeeById(long id) {
-        Optional<Employee> optional = employeeRepository.findById(id);
-        return optional.orElseThrow(() ->
-                new RuntimeException("Employee not found for id :: " + id));
+    public Employee getEmployeeById(long id, User user) {
+        Employee emp = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found for id :: " + id));
+        if (!emp.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Access denied: Employee does not belong to you");
+        }
+        return emp;
     }
 
     @Override
-    public void deleteEmployeeById(long id) {
-        this.employeeRepository.deleteById(id);
+    public void deleteEmployeeById(long id, User user) {
+        Employee emp = getEmployeeById(id, user);
+        employeeRepository.delete(emp);
     }
 
     @Override
-    public Page<Employee> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+    public Page<Employee> findPaginatedByUser(int pageNo, int pageSize, String sortField, String sortDirection, User user) {
         Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
                 Sort.by(sortField).ascending() : Sort.by(sortField).descending();
-
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize, sort);
-        return this.employeeRepository.findAll(pageable);
+        return employeeRepository.findByUser(user, pageable);
     }
 
     @Override
-    public Map<String, Long> getDashboardStatistics() {
+    public Map<String, Long> getDashboardStatistics(User user) {
         Map<String, Long> stats = new HashMap<>();
-
-        long totalEmployees = employeeRepository.count();
-        long activeEmployees = employeeRepository.countByIsActive(true);
-        long inactiveEmployees = employeeRepository.countByIsActive(false);
-
-        // Employees added this month
+        long totalEmployees = employeeRepository.findByUser(user).size();
+        long activeEmployees = employeeRepository.countByUserAndIsActive(user, true);
+        long inactiveEmployees = employeeRepository.countByUserAndIsActive(user, false);
         LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
-        long thisMonth = employeeRepository.countByCreatedAtAfter(
-                startOfMonth.atStartOfDay());
+        long thisMonth = employeeRepository.countByUserAndCreatedAtAfter(user, startOfMonth.atStartOfDay());
 
         stats.put("totalEmployees", totalEmployees);
         stats.put("activeEmployees", activeEmployees);
         stats.put("inactiveEmployees", inactiveEmployees);
         stats.put("thisMonth", thisMonth);
-
         return stats;
     }
 
     @Override
-    public List<Employee> getRecentEmployees(int count) {
+    public List<Employee> getRecentEmployees(User user, int count) {
         Pageable pageable = PageRequest.of(0, count, Sort.by("createdAt").descending());
-        return employeeRepository.findAll(pageable).getContent();
+        return employeeRepository.findByUser(user, pageable).getContent();
     }
 
     @Override
-    public long getActiveEmployeesCount() {
-        return employeeRepository.countByIsActive(true);
+    public long getActiveEmployeesCount(User user) {
+        return employeeRepository.countByUserAndIsActive(user, true);
     }
 
     @Override
-    public long getEmployeesAddedThisMonth() {
+    public long getEmployeesAddedThisMonth(User user) {
         LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
-        return employeeRepository.countByCreatedAtAfter(startOfMonth.atStartOfDay());
+        return employeeRepository.countByUserAndCreatedAtAfter(user, startOfMonth.atStartOfDay());
     }
 }

@@ -176,12 +176,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-chart-bar"></i>
-                            Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link active" th:href="@{/profile}">
                             <i class="fas fa-user-circle"></i>
                             My Profile
@@ -263,47 +257,47 @@
                                 </div>
 
                             </div>
-                        <!-- Status Section -->
-                        <div class="form-section">
-                            <h5 class="section-title">
-                                <i class="fas fa-toggle-on"></i>Status
-                            </h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox"
-                                               role="switch" id="isActive"
-                                               th:checked="*{isActive} ?: true"
-                                               th:field="*{isActive}">
-                                        <label class="form-check-label" for="isActive">
-                                            Active Employee
-                                        </label>
+                            <!-- Status Section -->
+                            <div class="form-section">
+                                <h5 class="section-title">
+                                    <i class="fas fa-toggle-on"></i>Status
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox"
+                                                   role="switch" id="isActive"
+                                                   th:checked="*{isActive} ?: true"
+                                                   th:field="*{isActive}">
+                                            <label class="form-check-label" for="isActive">
+                                                Active Employee
+                                            </label>
+                                        </div>
+                                        <small class="text-muted">
+                                            Toggle to set employee as active or inactive
+                                        </small>
                                     </div>
-                                    <small class="text-muted">
-                                        Toggle to set employee as active or inactive
-                                    </small>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Hidden ID Field for Update -->
-                        <input type="hidden" th:field="*{id}">
+                            <!-- Hidden ID Field for Update -->
+                            <input type="hidden" th:field="*{id}">
 
-                        <!-- Form Actions -->
-                        <div class="d-flex justify-content-between mt-4">
-                            <button type="reset" class="btn btn-secondary">
-                                <i class="fas fa-redo me-1"></i> Reset
-                            </button>
-                            <div>
-                                <a th:href="@{/employees}" class="btn btn-outline-secondary me-2">
-                                    <i class="fas fa-times me-1"></i> Cancel
-                                </a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-1"></i>
-                                    <span th:text="${employee.id} ? 'Update Employee' : 'Save Employee'"></span>
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="fas fa-redo me-1"></i> Reset
                                 </button>
+                                <div>
+                                    <a th:href="@{/employees}" class="btn btn-outline-secondary me-2">
+                                        <i class="fas fa-times me-1"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>
+                                        <span th:text="${employee.id} ? 'Update Employee' : 'Save Employee'"></span>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </form>
                 </div>
@@ -343,40 +337,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // Form validation
-        $('form').on('submit', function(event) {
-            if (!this.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            $(this).addClass('was-validated');
-        });
 
-        // Set today's date as default for hire date
-        if (!$('#hireDate').val()) {
-            var today = new Date().toISOString().split('T')[0];
-            $('#hireDate').val(today);
-        }
-
-        // Format salary input
-        $('#salary').on('blur', function() {
-            var value = parseFloat($(this).val());
-            if (!isNaN(value)) {
-                $(this).val(value.toFixed(2));
-            }
-        });
-
-        // Phone number formatting
-        $('#phoneNumber').on('input', function() {
-            var phone = $(this).val().replace(/\D/g, '');
-            if (phone.length > 10) {
-                phone = phone.substring(0, 10);
-            }
-            $(this).val(phone);
-        });
-    });
-</script>
 </body>
 </html>

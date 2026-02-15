@@ -169,21 +169,13 @@
             <div class="card">
                 <div class="profile-header">
                     <div class="text-center">
-                        <div th:if="${employee.profileImage != null}">
-                            <img th:src="@{'/uploads/profile-images/' + ${employee.profileImage}}"
-                                 alt="Profile Picture"
-                                 class="img-thumbnail rounded-circle"
-                                 style="width: 200px; height: 200px; object-fit: cover;">
-                        </div>
-                        <div th:unless="${employee.profileImage != null}">
-                            <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center"
-                                 style="width: 200px; height: 200px;">
+
                     <span class="text-white display-4">
                         <span th:text="${employee.firstName?.charAt(0)}"></span>
                         <span th:text="${employee.lastName?.charAt(0)}"></span>
                     </span>
-                            </div>
-                        </div>
+
+
                     </div>
                     <div class="text-center">
                         <h2 th:text="${employee.firstName} + ' ' + ${employee.lastName}"></h2>

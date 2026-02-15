@@ -75,24 +75,18 @@ public class AuthController {
             model.addAttribute("pageTitle", "Register");
             return "register";
         }
-
         try {
-            // Check if username exists
             if (userService.existsByUsername(user.getUsername())) {
                 model.addAttribute("error", "Username already exists!");
                 model.addAttribute("pageTitle", "Register");
                 return "register";
             }
-
-            // Check if email exists
             if (userService.existsByEmail(user.getEmail())) {
                 model.addAttribute("error", "Email already registered!");
                 model.addAttribute("pageTitle", "Register");
                 return "register";
             }
-
             userService.registerUser(user);
-            model.addAttribute("success", "Registration successful! Please login.");
             return "redirect:/login?success=true";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
@@ -136,7 +130,6 @@ public class AuthController {
             model.addAttribute("error", "Invalid or expired reset token.");
             return "redirect:/forgot-password";
         }
-
         model.addAttribute("token", token);
         model.addAttribute("pageTitle", "Reset Password");
         return "reset_password";
@@ -152,7 +145,6 @@ public class AuthController {
                 redirectAttributes.addFlashAttribute("error", "Passwords do not match.");
                 return "redirect:/reset-password/" + token;
             }
-
             boolean success = passwordResetService.resetPassword(token, password);
             if (success) {
                 redirectAttributes.addFlashAttribute("success",
@@ -187,21 +179,15 @@ public class AuthController {
                 redirectAttributes.addFlashAttribute("error", "New passwords do not match.");
                 return "redirect:/change-password";
             }
-
             Optional<User> userOptional = userService.findByUsername(principal.getName());
             if (userOptional.isPresent()) {
                 User user = userOptional.get();
-
-                // Verify current password
                 if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
                     redirectAttributes.addFlashAttribute("error", "Current password is incorrect.");
                     return "redirect:/change-password";
                 }
-
-                // Update password
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userService.updateUser(user);
-
                 redirectAttributes.addFlashAttribute("success", "Password changed successfully!");
                 return "redirect:/profile";
             } else {
@@ -234,17 +220,12 @@ public class AuthController {
             model.addAttribute("pageTitle", "Edit Profile");
             return "edit_profile";
         }
-
         try {
             User currentUser = userService.findByUsername(principal.getName())
                     .orElseThrow(() -> new RuntimeException("User not found"));
-
-            // Update allowed fields
             currentUser.setFullName(updatedUser.getFullName());
             currentUser.setEmail(updatedUser.getEmail());
-
             userService.updateUser(currentUser);
-
             model.addAttribute("success", "Profile updated successfully!");
             return "redirect:/profile";
         } catch (RuntimeException e) {

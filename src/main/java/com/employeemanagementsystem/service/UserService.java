@@ -13,12 +13,4 @@ public interface UserService {
     boolean existsByEmail(String email);
     User updateUser(User user);
     void deleteUser(Long id);
-
-    boolean verifyUserCredentials(String username, String email);
-
-    void updatePassword(String username, String newPassword);
-
-    void changePassword(String username, String currentPassword, String newPassword);
-
-    void updateProfile(String username, User updatedUser);
 }
