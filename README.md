@@ -50,17 +50,17 @@ Detailed employee profile view showing personal, employment, and status informat
 ### Steps:
 1. **Create MySQL Database:**
 ```sql
-CREATE DATABASE ems_db;
+CREATE DATABASE employeelist;
 CREATE USER 'ems_user'@'localhost' IDENTIFIED BY 'password123';
-GRANT ALL PRIVILEGES ON ems_db.* TO 'ems_user'@'localhost';
+GRANT ALL PRIVILEGES ON employeelist.* TO 'ems_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
 2. **Configure `application.properties`:**
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/ems_db
-spring.datasource.username=ems_user
-spring.datasource.password=password123
+spring.datasource.url=jdbc:mysql://localhost:3306/employeelist?useSSL=false&allowPublicKeyRetrieval=true
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
 spring.jpa.hibernate.ddl-auto=update
 server.port=8052
 ```
@@ -71,7 +71,7 @@ mvn clean compile
 mvn spring-boot:run
 ```
 
-4. **Access at:** http://localhost:8080
+4. **Access at:** http://localhost:8052
 
 ## 🔐 Default Login
 - **Admin:** `admin` / `admin123`
