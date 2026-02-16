@@ -62,7 +62,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/ems_db
 spring.datasource.username=ems_user
 spring.datasource.password=password123
 spring.jpa.hibernate.ddl-auto=update
-server.port=8080
+server.port=8052
 ```
 
 3. **Run the Application:**
