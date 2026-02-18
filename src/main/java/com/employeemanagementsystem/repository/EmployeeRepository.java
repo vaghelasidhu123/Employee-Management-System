@@ -22,23 +22,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     long countByUserAndIsActive(User user, boolean isActive);
 
     long countByUserAndCreatedAtAfter(User user, LocalDateTime date);
-
-    // Optional: global queries if needed for admin
-    long countByIsActive(boolean isActive);
-
-    long countByCreatedAtAfter(LocalDateTime date);
-
-    List<Employee> findByDepartment(String department);
-
-    @Query("SELECT e FROM Employee e WHERE " +
-            "LOWER(e.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(e.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<Employee> searchEmployees(@Param("keyword") String keyword);
-
-    @Query("SELECT e FROM Employee e ORDER BY e.salary DESC")
-    List<Employee> findTopEmployeesBySalary(Pageable pageable);
-
-    @Query("SELECT e.department, COUNT(e) FROM Employee e GROUP BY e.department")
-    List<Object[]> countEmployeesByDepartment();
+   
 }
